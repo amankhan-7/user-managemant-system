@@ -1,0 +1,60 @@
+/* src/CreateUserModal.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure modal is on top */
+}
+
+.modal-content {
+  background-color: #ffffff; /* White background for the modal */
+  padding: 15px; /* Reduced padding around the content */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  max-width: 350px; /* Set a maximum width to make it smaller */
+  width: 90%; /* Responsive width */
+  margin: 0 auto; /* Center the modal */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.modal-content h2 {
+  text-align: center; /* Center header text */
+  color: #333; /* Dark text for header */
+  margin-bottom: 15px; /* Reduced space below the header */
+}
+
+.form-group {
+  margin-bottom: 10px; /* Reduced space between form groups */
+  text-align: center; /* Center align labels and inputs */
+}
+
+label {
+  display: block; /* Make labels block-level elements */
+  margin-bottom: 3px; /* Reduced space below labels */
+  color: #555; /* Slightly lighter text color */
+}
+
+input {
+  width: 100%; /* Full width for inputs */
+  padding: 6px; /* Reduced padding for inputs */
+  border: 1px solid #ccc; /* Border style for inputs */
+  border-radius: 4px; /* Rounded corners for inputs */
+  font-size: 0.9em; /* Slightly smaller font for inputs */
+}
+
+.error {
+  color: red; /* Error message color */
+  font-size: 0.8em; /* Slightly smaller font for error messages */
+}
+
+/* Center buttons at the bottom */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between; /* Space buttons evenly */
+}
