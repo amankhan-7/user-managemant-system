@@ -114,10 +114,9 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
             <input 
               type="text" 
               name="username" 
-              value={formData.username || `USER-${formData.name.split(' ').join('-')}`} 
+              value={formData.username} 
               onChange={handleChange} 
               required 
-              readOnly 
             />
             {errors.username && <p className="error">{errors.username}</p>}
           </div>
