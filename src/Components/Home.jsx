@@ -3,30 +3,36 @@ import CreateUserModal from './CreateUserModal';
 import UserProfile from './UserProfile';
 import './Home.css';
 
-const Home = () => {
-  const [users, setUsers] = useState(() => {
-    // Load users from localStorage or set an empty array if no data exists
-    const savedUsers = localStorage.getItem('users');
-    return savedUsers ? JSON.parse(savedUsers) : [];
-  });
+const SkeletonScreen = () => {
+  return (
+    <div className="skeleton">
+      <p>Loading users...</p>
+    </div>
+  );
+};
 
-  const [loading, setLoading] = useState(true);
+const Home = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true); // Start with loading as true
   const [showModal, setShowModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch users only if localStorage is empty
+  // Fetch users from localStorage or from the API
   useEffect(() => {
-    if (users.length === 0) {
-      fetchUsers();
+    const savedUsers = localStorage.getItem('users');
+    
+    if (savedUsers) {
+      setUsers(JSON.parse(savedUsers));
+      setLoading(false); // Stop loading after setting users from localStorage
     } else {
-      setLoading(false);
+      fetchUsers(); // Fetch from API if no users in localStorage
     }
   }, []);
 
-  // Save users to localStorage whenever the user state changes
+  // Save users to localStorage whenever the users state changes
   useEffect(() => {
     if (users.length > 0) {
       localStorage.setItem('users', JSON.stringify(users));
@@ -34,16 +40,20 @@ const Home = () => {
   }, [users]);
 
   const fetchUsers = async () => {
-    setLoading(true);
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    const data = await response.json();
-    setUsers(data);
-    setLoading(false);
+    setLoading(true); // Start loading when fetching users
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false); // Stop loading once data is fetched
+    }
   };
 
-  const handleCreateUser = async (newUser) => {
-    // Simulate server response, as we're handling local state for now
-    const createdUser = { ...newUser, id: Date.now() }; // Add unique ID based on timestamp
+  const handleCreateUser = (newUser) => {
+    const createdUser = { ...newUser, id: Date.now() }; // Simulate unique ID
     setUsers([...users, createdUser]);
     setShowModal(false);
   };
@@ -53,13 +63,13 @@ const Home = () => {
     setShowModal(true);
   };
 
-  const handleUpdateUser = async (updatedUser) => {
+  const handleUpdateUser = (updatedUser) => {
     setUsers(users.map(user => (user.id === updatedUser.id ? updatedUser : user)));
     setShowModal(false);
     setEditingUser(null);
   };
 
-  const handleDeleteUser = async (id) => {
+  const handleDeleteUser = (id) => {
     setUsers(users.filter(user => user.id !== id));
   };
 
@@ -83,8 +93,9 @@ const Home = () => {
         />
         <button className='btn3' onClick={() => setShowModal(true)}>Create New User</button>
       </div>
+
       {loading ? (
-        <p>Loading users...</p>
+        <SkeletonScreen />  // Display the SkeletonScreen while loading
       ) : (
         <table className="table">
           <thead>
@@ -126,6 +137,7 @@ const Home = () => {
           </tbody>
         </table>
       )}
+
       {showModal && (
         <CreateUserModal
           onCreate={editingUser ? handleUpdateUser : handleCreateUser}
@@ -136,14 +148,19 @@ const Home = () => {
           initialData={editingUser}
         />
       )}
+
       {showProfile && selectedUser && (
         <UserProfile
           user={selectedUser}
           onClose={() => setShowProfile(false)}
         />
       )}
-      <div className='footer'
-      ><p>All rights reserved <a className='link' href='https://www.linkedin.com/in/amankhan7/'>©amankhan</a> </p></div>
+
+      <div className='footer'>
+        <p>
+          All rights reserved <a className='link' href='https://www.linkedin.com/in/amankhan7/'>©amankhan</a>
+        </p>
+      </div>
     </div>
   );
 };
