@@ -81,9 +81,13 @@ const Home = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+<<<<<<< HEAD:src/Components/Home.jsx
         <button className="btn3" onClick={() => setShowModal(true)}>
           Create New User
         </button>
+=======
+        <button className='btn3' onClick={() => setShowModal(true)}>Create New User</button>
+>>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/Home.jsx
       </div>
       {loading ? (
         <p>Loading users...</p>
