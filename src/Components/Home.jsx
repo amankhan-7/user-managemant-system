@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import CreateUserModal from './CreateUserModal';
 import UserProfile from './UserProfile';
-import SkeletonScreen from './SkeletonScreen'; // Import SkeletonScreen
 import './Home.css';
 
 const Home = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(() => {
+    // Load users from localStorage or set an empty array if no data exists
+    const savedUsers = localStorage.getItem('users');
+    return savedUsers ? JSON.parse(savedUsers) : [];
+  });
+
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -13,9 +17,21 @@ const Home = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Fetch users only if localStorage is empty
   useEffect(() => {
-    fetchUsers();
+    if (users.length === 0) {
+      fetchUsers();
+    } else {
+      setLoading(false);
+    }
   }, []);
+
+  // Save users to localStorage whenever the user state changes
+  useEffect(() => {
+    if (users.length > 0) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+  }, [users]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -26,14 +42,8 @@ const Home = () => {
   };
 
   const handleCreateUser = async (newUser) => {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users', {
-      method: 'POST',
-      body: JSON.stringify(newUser),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const createdUser = await response.json();
+    // Simulate server response, as we're handling local state for now
+    const createdUser = { ...newUser, id: Date.now() }; // Add unique ID based on timestamp
     setUsers([...users, createdUser]);
     setShowModal(false);
   };
@@ -44,22 +54,12 @@ const Home = () => {
   };
 
   const handleUpdateUser = async (updatedUser) => {
-    await fetch(`https://jsonplaceholder.typicode.com/users/${updatedUser.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updatedUser),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
     setUsers(users.map(user => (user.id === updatedUser.id ? updatedUser : user)));
     setShowModal(false);
     setEditingUser(null);
   };
 
   const handleDeleteUser = async (id) => {
-    await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
-      method: 'DELETE',
-    });
     setUsers(users.filter(user => user.id !== id));
   };
 
@@ -68,7 +68,7 @@ const Home = () => {
     setShowProfile(true);
   };
 
-  const filteredUsers = users.filter(user => 
+  const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -77,22 +77,24 @@ const Home = () => {
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search users..."
+          placeholder="Search Users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button className='btn3' onClick={() => setShowModal(true)}>Create User</button>
+        <button className="btn3" onClick={() => setShowModal(true)}>
+          Create New User
+        </button>
       </div>
-      {loading ? ( // Show SkeletonScreen while loading
-        <SkeletonScreen />
+      {loading ? (
+        <p>Loading users...</p>
       ) : (
         <table className="table">
           <thead>
             <tr>
-              <th>Name</th>
+              <th className='firstchild'>Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Actions</th>
+              <th className='lastchild'>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -102,8 +104,24 @@ const Home = () => {
                 <td>{user.email}</td>
                 <td>{user.phone}</td>
                 <td>
-                  <button className='btn' onClick={(e) => { e.stopPropagation(); handleEditUser(user); }}>Edit</button>
-                  <button className='btn1' onClick={(e) => { e.stopPropagation(); handleDeleteUser(user.id); }}>Delete</button>
+                  <button
+                    className="btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditUser(user);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteUser(user.id);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -117,7 +135,7 @@ const Home = () => {
             setShowModal(false);
             setEditingUser(null);
           }}
-          initialData={editingUser} // Pass existing user data for editing
+          initialData={editingUser}
         />
       )}
       {showProfile && selectedUser && (
@@ -126,6 +144,8 @@ const Home = () => {
           onClose={() => setShowProfile(false)}
         />
       )}
+      <div className='footer'
+      ><p>All rights reserved <a className='link' href='https://www.linkedin.com/in/amankhan7/'>©amankhan</a> </p></div>
     </div>
   );
 };
