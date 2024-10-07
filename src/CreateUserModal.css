@@ -58,3 +58,6 @@ input {
   display: flex;
   justify-content: space-between; /* Space buttons evenly */
 }
+.form{
+  padding-right: 15px;
+}
