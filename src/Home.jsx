@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import CreateUserModal from './CreateUserModal';
 import UserProfile from './UserProfile';
-import SkeletonScreen from './SkeletonScreen'; // Import SkeletonScreen
+import SkeletonScreen from './SkeletonScreen';
 import './Home.css';
 
 const Home = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [editingUser, setEditingUser] = useState(null); // State to manage editing user
+  const [selectedUser, setSelectedUser] = useState(null); // State to track the selected user for profile view
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -25,6 +24,7 @@ const Home = () => {
     setLoading(false);
   };
 
+  // Handle creating new user
   const handleCreateUser = async (newUser) => {
     const response = await fetch('https://jsonplaceholder.typicode.com/users', {
       method: 'POST',
@@ -38,24 +38,30 @@ const Home = () => {
     setShowModal(false);
   };
 
+  // Handle editing user (this opens the modal with the existing user data)
   const handleEditUser = (user) => {
-    setEditingUser(user);
+    setEditingUser(user); // Pass the user data to the modal
     setShowModal(true);
   };
 
+  // Handle updating user
   const handleUpdateUser = async (updatedUser) => {
-    await fetch(`https://jsonplaceholder.typicode.com/users/${updatedUser.id}`, {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${updatedUser.id}`, {
       method: 'PUT',
       body: JSON.stringify(updatedUser),
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    setUsers(users.map(user => (user.id === updatedUser.id ? updatedUser : user)));
+    const data = await response.json();
+
+    // Update the users state with the modified user
+    setUsers(users.map(user => (user.id === data.id ? data : user)));
     setShowModal(false);
-    setEditingUser(null);
+    setEditingUser(null); // Reset editingUser after successful update
   };
 
+  // Handle deleting user
   const handleDeleteUser = async (id) => {
     await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
       method: 'DELETE',
@@ -63,9 +69,9 @@ const Home = () => {
     setUsers(users.filter(user => user.id !== id));
   };
 
+  // Handle profile view
   const handleViewProfile = (user) => {
     setSelectedUser(user);
-    setShowProfile(true);
   };
 
   const filteredUsers = users.filter(user => 
@@ -83,8 +89,8 @@ const Home = () => {
         />
         <button className='btn3' onClick={() => setShowModal(true)}>Create User</button>
       </div>
-      {loading ? ( // Show SkeletonScreen while loading
-        <SkeletonScreen />
+      {loading ? (
+        <SkeletonScreen /> // Skeleton screen to show loading state
       ) : (
         <table className="table">
           <thead>
@@ -117,13 +123,13 @@ const Home = () => {
             setShowModal(false);
             setEditingUser(null);
           }}
-          initialData={editingUser} // Pass existing user data for editing
+          initialData={editingUser} // Pass the selected user for editing
         />
       )}
-      {showProfile && selectedUser && (
+      {selectedUser && (
         <UserProfile
           user={selectedUser}
-          onClose={() => setShowProfile(false)}
+          onClose={() => setSelectedUser(null)}
         />
       )}
     </div>
