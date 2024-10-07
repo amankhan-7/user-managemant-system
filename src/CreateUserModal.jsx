@@ -1,13 +1,12 @@
-// src/CreateUserModal.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CreateUserModal.css'; // Import modal styles
 
-const CreateUserModal = ({ onCreate, onCancel }) => {
+const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    username: '', // Added for username
+    username: '', 
     address: { street: '', city: '' },
     company: { name: '' },
     website: '',
@@ -15,10 +14,15 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
   
   const [errors, setErrors] = useState({}); // To hold validation errors
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);  // Set initial data for editing
+    }
+  }, [initialData]);
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.includes('address')) {
       const addressField = name.split('.')[1];
       setFormData({ ...formData, address: { ...formData.address, [addressField]: value } });
@@ -27,12 +31,6 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
       setFormData({ ...formData, company: { ...formData.company, [companyField]: value } });
     } else {
       setFormData({ ...formData, [name]: value });
-    }
-
-    // Only update username if the name field is filled
-    if (name === "name") {
-      const formattedUsername = `USER-${value.split(' ').join('-')}`; // Format username based on name
-      setFormData((prevData) => ({ ...prevData, username: formattedUsername }));
     }
   };
 
@@ -51,7 +49,6 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
     if (!formData.phone) {
       newErrors.phone = 'Phone is required.';
     }
-    // Removed username validation
     if (!formData.address.street) {
       newErrors.street = 'Street address is required.';
     }
@@ -71,7 +68,7 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
       return;
     }
 
-    // Clear errors and create the user
+    // Clear errors and create or update the user
     setErrors({});
     onCreate(formData); // Pass the data to the parent
   };
@@ -79,7 +76,7 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Create New User</h2>
+        <h2>{initialData ? 'Edit User' : 'Create New User'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Name:</label>
@@ -97,15 +94,6 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
             {errors.phone && <p className="error">{errors.phone}</p>}
           </div>
           <div className="form-group">
-            <label>Username:</label>
-            <input 
-              type="text" 
-              name="username" 
-              value={formData.username} // Use username from state
-              readOnly // Make username non-editable
-            />
-          </div>
-          <div className="form-group">
             <label>Address Street:</label>
             <input type="text" name="address.street" value={formData.address.street} onChange={handleChange} required />
             {errors.street && <p className="error">{errors.street}</p>}
@@ -116,18 +104,18 @@ const CreateUserModal = ({ onCreate, onCancel }) => {
             {errors.city && <p className="error">{errors.city}</p>}
           </div>
           <div className="form-group">
-            <label>Company Name (optional):</label>
+            <label>Company:</label>
             <input type="text" name="company.name" value={formData.company.name} onChange={handleChange} />
             {errors.companyName && <p className="error">{errors.companyName}</p>}
           </div>
           <div className="form-group">
-            <label>Website (optional):</label>
+            <label>Website:</label>
             <input type="url" name="website" value={formData.website} onChange={handleChange} />
             {errors.website && <p className="error">{errors.website}</p>}
           </div>
-          <div className="modal-buttons">
-            <button type="submit">Create User</button>
-            <button type="button" onClick={onCancel}>Cancel</button>
+          <div className="form-actions">
+            <button type="submit" className="btn-submit">{initialData ? 'Update User' : 'Create User'}</button>
+            <button type="button" className="btn-cancel" onClick={onCancel}>Cancel</button>
           </div>
         </form>
       </div>
