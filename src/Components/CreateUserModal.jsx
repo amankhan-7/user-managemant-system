@@ -1,30 +1,16 @@
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-import React, { useState, useEffect } from 'react';
-import './CreateUserModal.css';
-=======
 import React, { useState } from 'react';
 import './CreateUserModal.css'; // Import modal styles
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
 
 const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
   const [formData, setFormData] = useState(initialData || {
     name: '',
     email: '',
     phone: '',
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-    username: '',
-=======
     username: '', 
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
     address: { street: '', city: '' },
     company: { name: '' },
     website: '',
   });
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-=======
-
-  const [errors, setErrors] = useState({});
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
 
   const [errors, setErrors] = useState({});
 
@@ -45,10 +31,7 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
     e.preventDefault();
     const newErrors = {};
 
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-=======
     // Validation logic
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
     if (!formData.name || formData.name.length < 3) {
       newErrors.name = 'Name is required and must be at least 3 characters.';
     }
@@ -70,8 +53,6 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
     if (formData.company.name && formData.company.name.length < 3) {
       newErrors.companyName = 'If provided, company name must be at least 3 characters.';
     }
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-=======
 
     // Website validation
     if (formData.website) {
@@ -80,7 +61,6 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
         newErrors.website = 'Must be a valid URL (e.g., http://example.com, https://example.com, or example.com).';
       }
     }
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -94,13 +74,8 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-        <h2>Create/Edit User</h2>
-        <form onSubmit={handleSubmit}>
-=======
         <h2>Create New User</h2>
         <form className='form' onSubmit={handleSubmit}>
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
           <div className="form-group">
             <label>Name:</label>
             <input
@@ -136,14 +111,6 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
           </div>
           <div className="form-group">
             <label>Username:</label>
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-=======
             <input 
               type="text" 
               name="username" 
@@ -151,7 +118,6 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
               onChange={handleChange} 
               required 
               readOnly 
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
             />
             {errors.username && <p className="error">{errors.username}</p>}
           </div>
@@ -198,11 +164,7 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
             {errors.website && <p className="error">{errors.website}</p>}
           </div>
           <div className="modal-buttons">
-<<<<<<< HEAD:src/Components/CreateUserModal.jsx
-            <button type="submit">Save User</button>
-=======
             <button type="submit">Update User</button>
->>>>>>> 5dbb47deebb821ab679b006c1040ff0b5bb9cb83:src/CreateUserModal.jsx
             <button type="button" onClick={onCancel}>Cancel</button>
           </div>
         </form>
