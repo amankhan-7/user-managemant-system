@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CreateUserModal.css'; // Import modal styles
 
 const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
@@ -6,7 +6,7 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
     name: '',
     email: '',
     phone: '',
-    username: '', 
+    username: '',
     address: { street: '', city: '' },
     company: { name: '' },
     website: '',
@@ -18,12 +18,18 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
     const { name, value } = e.target;
     if (name.includes('address')) {
       const addressField = name.split('.')[1];
-      setFormData({ ...formData, address: { ...formData.address, [addressField]: value } });
+      setFormData((prevData) => ({
+        ...prevData,
+        address: { ...prevData.address, [addressField]: value },
+      }));
     } else if (name.includes('company')) {
       const companyField = name.split('.')[1];
-      setFormData({ ...formData, company: { ...formData.company, [companyField]: value } });
+      setFormData((prevData) => ({
+        ...prevData,
+        company: { ...prevData.company, [companyField]: value },
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
   };
 
@@ -66,6 +72,9 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
       setErrors(newErrors);
       return;
     }
+
+    // Log the form data for debugging
+    console.log("Form Data to be submitted:", formData); // Log the formData
 
     setErrors({});
     onCreate(formData);
@@ -111,12 +120,12 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
           </div>
           <div className="form-group">
             <label>Username:</label>
-            <input 
-              type="text" 
-              name="username" 
-              value={formData.username} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
             />
             {errors.username && <p className="error">{errors.username}</p>}
           </div>
@@ -163,7 +172,7 @@ const CreateUserModal = ({ onCreate, onCancel, initialData }) => {
             {errors.website && <p className="error">{errors.website}</p>}
           </div>
           <div className="modal-buttons">
-            <button type="submit">Update User</button>
+            <button type="submit">Create User</button>
             <button type="button" onClick={onCancel}>Cancel</button>
           </div>
         </form>
