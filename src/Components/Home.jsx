@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CreateUserModal from './CreateUserModal';
 import UserProfile from './UserProfile';
+import SkeletonScreen from './SkeletonScreen'; // Import the SkeletonScreen component
 import './Home.css';
-
-const SkeletonScreen = () => {
-  return (
-    <div className="skeleton">
-      <p>Loading users...</p>
-    </div>
-  );
-};
 
 const Home = () => {
   const [users, setUsers] = useState([]);
@@ -26,7 +19,9 @@ const Home = () => {
     
     if (savedUsers) {
       setUsers(JSON.parse(savedUsers));
-      setLoading(false); // Stop loading after setting users from localStorage
+      setTimeout(() => {
+        setLoading(false); // Stop loading after 0.5 seconds delay even with local storage
+      }, 500);
     } else {
       fetchUsers(); // Fetch from API if no users in localStorage
     }
@@ -44,11 +39,15 @@ const Home = () => {
     try {
       const response = await fetch('https://jsonplaceholder.typicode.com/users');
       const data = await response.json();
-      setUsers(data);
+
+      // Add a 0.5 second delay to show the SkeletonScreen
+      setTimeout(() => {
+        setUsers(data);
+        setLoading(false); // Stop loading after the delay
+      }, 300); // 0.5 second hold
     } catch (error) {
       console.error('Error fetching users:', error);
-    } finally {
-      setLoading(false); // Stop loading once data is fetched
+      setLoading(false); // Stop loading if there is an error
     }
   };
 
